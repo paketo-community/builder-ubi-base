@@ -1,6 +1,6 @@
 module github.com/paketo-community/builder-ubi-base
 
-go 1.18
+go 1.20
 
 require (
 	github.com/onsi/gomega v1.27.8
