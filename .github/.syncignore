@@ -1,2 +1,3 @@
 CODEOWNERS
 dependabot.yml
+scripts/.util/tools.json
