@@ -1,29 +1,20 @@
 description = "Ubi 8 base image with buildpacks for Node.js"
 
 [[buildpacks]]
-  uri = "docker://gcr.io/paketo-buildpacks/nodejs:1.7.0"
-  version = "1.7.0"
+  uri = "docker://gcr.io/paketo-buildpacks/nodejs:1.8.0"
+  version = "1.8.0"
 
 [lifecycle]
-  version = "0.17.0-pre.2"
+  version = "0.16.5"
 
 [[order]]
+
   [[order.group]]
     id = "paketo-buildpacks/nodejs"
-    version = "1.7.0"
-
-[[extensions]]
-  id = "paketo-community/ubi-nodejs-extension"
-  version = "0.0.3"
-  uri = "paketocommunity/ubi-nodejs-extension:0.0.3"
-
-[[order-extensions]]
-  [[order-extensions.group]]
-    id = "paketo-community/ubi-nodejs-extension"
-    version = "0.0.3"
+    version = "1.8.0"
 
 [stack]
-  id = "io.buildpacks.stacks.ubi8"
   build-image = "docker.io/paketocommunity/build-ubi-base:0.0.1"
+  id = "io.buildpacks.stacks.ubi8"
   run-image = "index.docker.io/paketocommunity/run-ubi-base:latest"
   run-image-mirrors = []
