@@ -30,6 +30,10 @@ jobs:
       with:
         pack-version: ${{ steps.pack-version.outputs.version }}
 
+    - name: Enable Experimental Pack Features
+      run: |
+        pack config experimental true
+
     - name: Create Builder Image
       run: |
         pack builder create builder --config builder.toml
