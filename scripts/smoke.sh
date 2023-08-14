@@ -54,9 +54,10 @@ function main() {
 
   tools::install "${token}"
 
-  builder::create "${name}"
-  image::pull::lifecycle "${name}"
-  tests::run "${name}"
+  reg=$(docker run -d -p5000:5000 registry:2)
+  builder::create "localhost:5000/${name}"
+  docker push "localhost:5000/${name}"
+  tests::run "localhost:5000/${name}" $reg
 }
 
 function usage() {
@@ -106,6 +107,8 @@ function image::pull::lifecycle() {
 function tests::run() {
   local name
   name="${1}"
+  local reg
+  reg="${2}"
 
   util::print::title "Run Builder Smoke Tests"
 
@@ -114,8 +117,10 @@ function tests::run() {
   pushd "${BUILDERDIR}" > /dev/null
     if GOMAXPROCS="${GOMAXPROCS:-4}" go test -count=1 -timeout 0 ./smoke/... -v -run Smoke --name "${name}" | tee "${testout}"; then
       util::tools::tests::checkfocus "${testout}"
+      docker stop $reg
       util::print::success "** GO Test Succeeded **"
     else
+      docker stop $reg
       util::print::error "** GO Test Failed **"
     fi
   popd > /dev/null

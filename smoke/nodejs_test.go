@@ -56,6 +56,7 @@ func testNodejs(t *testing.T, context spec.G, it spec.S) {
 
 			var logs fmt.Stringer
 			image, logs, err = pack.Build.
+				WithNetwork("host").
 				WithPullPolicy("always").
 				WithBuilder(Builder).
 				Execute(name, source)
