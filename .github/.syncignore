@@ -1,3 +1,4 @@
 CODEOWNERS
 dependabot.yml
 scripts/.util/tools.json
+scripts/smoke.sh
