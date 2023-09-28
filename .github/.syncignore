@@ -1,5 +1,3 @@
 CODEOWNERS
 dependabot.yml
-.github/workflows/push-image.yml
-scripts/.util/tools.json
-scripts/smoke.sh
+push-image.yml
