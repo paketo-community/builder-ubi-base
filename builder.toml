@@ -1,8 +1,8 @@
 description = "Ubi 8 base image with buildpacks for Node.js"
 
 [[buildpacks]]
-  uri = "docker://gcr.io/paketo-buildpacks/nodejs:1.8.0"
-  version = "1.8.0"
+  uri = "docker://gcr.io/paketo-buildpacks/nodejs:2.0.0"
+  version = "2.0.0"
 
 [[extensions]]
   id = "paketo-community/ubi-nodejs-extension"
@@ -16,7 +16,7 @@ description = "Ubi 8 base image with buildpacks for Node.js"
 
   [[order.group]]
     id = "paketo-buildpacks/nodejs"
-    version = "1.8.0"
+    version = "2.0.0"
 
 [[order-extensions]]
 
