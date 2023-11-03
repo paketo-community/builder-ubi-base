@@ -11,16 +11,16 @@ description = "Ubi 8 base image with buildpacks for Node.js and Java"
   version = "0.0.3"
 
 [[buildpacks]]
-  uri = "docker://gcr.io/paketo-buildpacks/java:10.3.0"
-  version = "10.3.0"
-
-[[buildpacks]]
   uri = "docker://docker.io/paketocommunity/ubi-java-buildpack:0.1.0"
   version = "0.1.0"
 
 [[buildpacks]]
   uri = "docker://gcr.io/paketo-buildpacks/quarkus:0.2.4"
-  version = "0.2.4"
+  version = "0.2.4"  
+
+[[buildpacks]]
+  uri = "docker://gcr.io/paketo-buildpacks/java:10.3.0"
+  version = "10.3.0"
 
 [[buildpacks]]
   uri = "docker://gcr.io/paketo-buildpacks/nodejs:2.0.0"
@@ -52,7 +52,7 @@ description = "Ubi 8 base image with buildpacks for Node.js and Java"
     version = "2.0.0"
 
 [lifecycle]
-  version = "0.17.2"
+  version = "0.18.1"
 
 [run]
 [[run.images]]
@@ -70,7 +70,7 @@ image = "docker.io/paketocommunity/run-nodejs-18-ubi-base"
 image = "docker.io/paketocommunity/build-ubi-base:0.0.10"
 
 [stack]
-  build-image = "docker.io/paketocommunity/build-ubi-base:0.0.10"
+  build-image = "docker.io/paketocommunity/build-ubi-base:0.0.12"
   id = "io.buildpacks.stacks.ubi8"
   run-image = "index.docker.io/paketocommunity/run-ubi-base:latest"
   run-image-mirrors = []
