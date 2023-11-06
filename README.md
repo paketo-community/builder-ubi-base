@@ -4,7 +4,7 @@
 
 This builder uses the [Paketo Ubi Base
 Stack](https://github.com/paketo-community/ubi-base-stack) (ubi 8
-build and run images) with buildpacks for Node.js.
+build and run images) with buildpacks for Node.js and Java.
 
 To see which versions of build and run images, buildpacks, and the lifecycle
 that are contained within a given builder version, see the
