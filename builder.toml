@@ -1,28 +1,73 @@
-description = "Ubi 8 base image with buildpacks for Node.js"
+description = "Ubi 8 base image with buildpacks for Node.js and Java"
 
-[[buildpacks]]
-  uri = "docker://gcr.io/paketo-buildpacks/nodejs:2.0.0"
-  version = "2.0.0"
+[[extensions]]
+  id = "paketo-community/ubi-java-extension"
+  uri = "docker://docker.io/paketocommunity/ubi-java-extension:0.1.1"
+  version = "0.1.1"
 
 [[extensions]]
   id = "paketo-community/ubi-nodejs-extension"
   uri = "docker://docker.io/paketocommunity/ubi-nodejs-extension:0.0.3"
   version = "0.0.3"
 
-[lifecycle]
-  version = "0.18.1"
+[[buildpacks]]
+  uri = "docker://docker.io/paketocommunity/ubi-java-buildpack:0.1.0"
+  version = "0.1.0"
+
+[[buildpacks]]
+  uri = "docker://gcr.io/paketo-buildpacks/quarkus:0.2.4"
+  version = "0.2.4"  
+
+[[buildpacks]]
+  uri = "docker://gcr.io/paketo-buildpacks/java:10.3.0"
+  version = "10.3.0"
+
+[[buildpacks]]
+  uri = "docker://gcr.io/paketo-buildpacks/nodejs:2.0.0"
+  version = "2.0.0"
+
+[[order-extensions]]
+  [[order-extensions.group]]
+    id = "paketo-community/ubi-java-extension"
+    version = "0.1.1"
+  [[order-extensions.group]]
+    id = "paketo-community/ubi-nodejs-extension"
+    version = "0.0.3"
 
 [[order]]
+  [[order.group]]
+    id = "paketo-community/ubi-java-buildpack"
+    version = "0.1.0"
+  [[order.group]]
+    id = "paketo-buildpacks/quarkus"
+    version = "0.2.4"
+    optional = true
+  [[order.group]]
+    id = "paketo-buildpacks/java"
+    version = "10.3.0"  
 
+[[order]]
   [[order.group]]
     id = "paketo-buildpacks/nodejs"
     version = "2.0.0"
 
-[[order-extensions]]
+[lifecycle]
+  version = "0.18.1"
 
-  [[order-extensions.group]]
-    id = "paketo-community/ubi-nodejs-extension"
-    version = "0.0.3"
+[run]
+[[run.images]]
+image = "docker.io/paketocommunity/run-java-8-ubi-base"
+[[run.images]]
+image = "docker.io/paketocommunity/run-java-11-ubi-base"
+[[run.images]]
+image = "docker.io/paketocommunity/run-java-17-ubi-base"
+[[run.images]]
+image = "docker.io/paketocommunity/run-nodejs-16-ubi-base"
+[[run.images]]
+image = "docker.io/paketocommunity/run-nodejs-18-ubi-base"
+
+[build]
+image = "docker.io/paketocommunity/build-ubi-base:0.0.10"
 
 [stack]
   build-image = "docker.io/paketocommunity/build-ubi-base:0.0.12"

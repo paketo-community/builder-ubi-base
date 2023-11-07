@@ -13,8 +13,9 @@ source "${PROGDIR}/.util/tools.sh"
 source "${PROGDIR}/.util/print.sh"
 
 function main() {
-  local name token
+  local name token regport
   token=""
+  regport=""
 
   while [[ "${#}" != 0 ]]; do
     case "${1}" in
@@ -31,6 +32,11 @@ function main() {
 
       --token|-t)
         token="${2}"
+        shift 2
+        ;;
+
+      --regport|-p)
+        regport="${2}"
         shift 2
         ;;
 
@@ -52,12 +58,16 @@ function main() {
     name="testbuilder"
   fi
 
+  if [[ -z "${regport:-}" ]]; then
+    regport="5000"
+  fi
+
   tools::install "${token}"
 
-  reg=$(docker run -d -p5000:5000 registry:2)
-  builder::create "localhost:5000/${name}"
-  docker push "localhost:5000/${name}"
-  tests::run "localhost:5000/${name}" $reg
+  reg=$(docker run -d -p$regport:5000 registry:2)
+  builder::create "localhost:$regport/${name}"
+  docker push "localhost:$regport/${name}"
+  tests::run "localhost:$regport/${name}" $reg
 }
 
 function usage() {
@@ -70,6 +80,7 @@ OPTIONS
   --help        -h         prints the command usage
   --name <name> -n <name>  sets the name of the builder that is built for testing
   --token <token>          Token used to download assets from GitHub (e.g. jam, pack, etc) (optional)
+  --regport <port>         Local port to use for registry during tests
 USAGE
 }
 
