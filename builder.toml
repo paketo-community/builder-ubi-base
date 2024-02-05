@@ -61,7 +61,7 @@ description = "Ubi 8 base image with buildpacks for Node.js and Java"
     version = "0.2.0"
 
 [stack]
-  build-image = "docker.io/paketocommunity/build-ubi-base:0.0.30"
+  build-image = "docker.io/paketocommunity/build-ubi-base:0.0.31"
   id = "io.buildpacks.stacks.ubi8"
   run-image = "index.docker.io/paketocommunity/run-ubi-base:latest"
   run-image-mirrors = []
