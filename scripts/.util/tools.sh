@@ -173,3 +173,29 @@ function util::tools::tests::checkfocus() {
   fi
   rm "${testout}"
 }
+
+function util::tools::setup_local_registry() {
+
+  registry_port="${1}"
+
+  local registry_container_id
+  if [[ "$(curl -s -o /dev/null -w "%{http_code}" localhost:$registry_port/v2/)" == "200" ]]; then
+    registry_container_id=""
+  else
+    registry_container_id=$(docker run -d -p "${registry_port}:5000" --restart=always registry:2)
+  fi
+
+  echo $registry_container_id
+}
+
+function util::tools::cleanup_local_registry() {
+  local registry_container_id
+  registry_container_id="${1}"
+
+  util::print::title "inside cleanup $registry_container_id"
+
+  if [[ -n "${registry_container_id}" ]]; then
+    docker stop $registry_container_id
+    docker rm $registry_container_id
+  fi
+}
