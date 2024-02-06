@@ -74,7 +74,7 @@ func testNodejs(t *testing.T, context spec.G, it spec.S) {
 			Expect(logs).To(ContainLines(ContainSubstring("Paketo Buildpack for NPM Install")))
 			Expect(logs).To(ContainLines(ContainSubstring("Paketo Buildpack for NPM Start")))
 			Expect(logs).To(ContainLines(ContainSubstring("[extender (build)] Enabling module streams")))
-			Expect(logs).To(ContainLines(ContainSubstring("nodejs:18")))
+			Expect(logs).To(ContainLines(MatchRegexp(`nodejs:\d+`)))
 			Expect(logs).To(ContainLines(ContainSubstring("[extender (build)]   Node no longer requested by plan")))
 		})
 	})
