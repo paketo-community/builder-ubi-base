@@ -13,9 +13,10 @@ source "${PROGDIR}/.util/tools.sh"
 source "${PROGDIR}/.util/print.sh"
 
 function main() {
-  local name token regport
+  local name token regport create_registry
   token=""
   regport=""
+  create_registry="true"
 
   while [[ "${#}" != 0 ]]; do
     case "${1}" in
@@ -64,10 +65,13 @@ function main() {
 
   tools::install "${token}"
 
-  reg=$(docker run -d -p$regport:5000 registry:2)
+  util::print::title "Setting up local registry"
+
+  registry_container_id=$(util::tools::setup_local_registry "$regport")
+
   builder::create "localhost:$regport/${name}"
   docker push "localhost:$regport/${name}"
-  tests::run "localhost:$regport/${name}" $reg
+  tests::run "localhost:$regport/${name}" "$registry_container_id"
 }
 
 function usage() {
@@ -118,8 +122,8 @@ function image::pull::lifecycle() {
 function tests::run() {
   local name
   name="${1}"
-  local reg
-  reg="${2}"
+  local registry_container_id
+  registry_container_id="${2}"
 
   util::print::title "Run Builder Smoke Tests"
 
@@ -128,10 +132,10 @@ function tests::run() {
   pushd "${BUILDERDIR}" > /dev/null
     if GOMAXPROCS="${GOMAXPROCS:-4}" go test -count=1 -timeout 0 ./smoke/... -v -run Smoke --name "${name}" | tee "${testout}"; then
       util::tools::tests::checkfocus "${testout}"
-      docker stop $reg
+      util::tools::cleanup_local_registry "${registry_container_id}"
       util::print::success "** GO Test Succeeded **"
     else
-      docker stop $reg
+      util::tools::cleanup_local_registry "${registry_container_id}"
       util::print::error "** GO Test Failed **"
     fi
   popd > /dev/null
