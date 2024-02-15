@@ -27,7 +27,7 @@ description = "Ubi 8 base image with buildpacks for Node.js and Java"
   version = "0.2.0"
 
 [lifecycle]
-  version = "0.18.4"
+  version = "0.18.5"
 
 [[order]]
 
