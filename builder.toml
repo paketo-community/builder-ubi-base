@@ -5,20 +5,20 @@ description = "Ubi 8 base image with buildpacks for Node.js, Java, Quarkus and P
   version = "0.1.0"
 
 [[buildpacks]]
-  uri = "docker://gcr.io/paketo-buildpacks/quarkus:0.2.4"
-  version = "0.2.4"
+  uri = "docker://gcr.io/paketo-buildpacks/quarkus:0.2.5"
+  version = "0.2.5"
 
 [[buildpacks]]
-  uri = "docker://gcr.io/paketo-buildpacks/java:11.1.0"
-  version = "11.1.0"
+  uri = "docker://gcr.io/paketo-buildpacks/java:12.0.0"
+  version = "12.0.0"
 
 [[buildpacks]]
   uri = "docker://gcr.io/paketo-buildpacks/nodejs:2.2.0"
   version = "2.2.0"
 
 [[buildpacks]]
-  uri = "docker://gcr.io/paketo-buildpacks/procfile:5.6.8"
-  version = "5.6.8"
+  uri = "docker://gcr.io/paketo-buildpacks/procfile:5.6.9"
+  version = "5.6.9"
 
 [[extensions]]
   id = "paketo-community/ubi-java-extension"
@@ -42,11 +42,11 @@ description = "Ubi 8 base image with buildpacks for Node.js, Java, Quarkus and P
   [[order.group]]
     id = "paketo-buildpacks/quarkus"
     optional = true
-    version = "0.2.4"
+    version = "0.2.5"
 
   [[order.group]]
     id = "paketo-buildpacks/java"
-    version = "11.1.0"
+    version = "12.0.0"
 
 [[order]]
 
@@ -58,7 +58,7 @@ description = "Ubi 8 base image with buildpacks for Node.js, Java, Quarkus and P
 
   [[order.group]]
     id = "paketo-buildpacks/procfile"
-    version = "5.6.8"
+    version = "5.6.9"
 
 [[order-extensions]]
 
@@ -71,7 +71,7 @@ description = "Ubi 8 base image with buildpacks for Node.js, Java, Quarkus and P
     version = "0.2.0"
 
 [stack]
-  build-image = "docker.io/paketocommunity/build-ubi-base:0.0.33"
+  build-image = "docker.io/paketocommunity/build-ubi-base:0.0.34"
   id = "io.buildpacks.stacks.ubi8"
   run-image = "index.docker.io/paketocommunity/run-ubi-base:latest"
   run-image-mirrors = []
