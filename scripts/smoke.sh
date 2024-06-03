@@ -5,6 +5,7 @@ set -o pipefail
 
 readonly PROGDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly BUILDERDIR="$(cd "${PROGDIR}/.." && pwd)"
+readonly BIN_DIR="${BUILDERDIR}/.bin"
 
 # shellcheck source=SCRIPTDIR/.util/tools.sh
 source "${PROGDIR}/.util/tools.sh"
@@ -13,10 +14,8 @@ source "${PROGDIR}/.util/tools.sh"
 source "${PROGDIR}/.util/print.sh"
 
 function main() {
-  local name token regport create_registry
+  local name token
   token=""
-  regport=""
-  create_registry="true"
 
   while [[ "${#}" != 0 ]]; do
     case "${1}" in
@@ -33,11 +32,6 @@ function main() {
 
       --token|-t)
         token="${2}"
-        shift 2
-        ;;
-
-      --regport|-p)
-        regport="${2}"
         shift 2
         ;;
 
@@ -59,19 +53,32 @@ function main() {
     name="testbuilder"
   fi
 
-  if [[ -z "${regport:-}" ]]; then
-    regport="5000"
+  local registryPort registryPid localRegistry imageName
+
+  local push_builder_to_local_registry
+  if [ -f "$(dirname "${BASH_SOURCE[0]}")/options.json" ]; then
+    push_builder_to_local_registry="$(jq -r '.push_builder_to_local_registry //false' "$(dirname "${BASH_SOURCE[0]}")/options.json")"
+  else
+    push_builder_to_local_registry="false"
   fi
 
   tools::install "${token}"
 
-  util::print::title "Setting up local registry"
+  builder::create "${name}"
 
-  registry_container_id=$(util::tools::setup_local_registry "$regport")
+  if [ "${push_builder_to_local_registry}" == "true" ]; then
+    registryPort=$(get::random::port)
+    registryPid=$(local::registry::start "$registryPort")
+    localRegistry="127.0.0.1:$registryPort"
+    docker tag "$name" "$localRegistry/$name"
+    docker push "$localRegistry/$name"
+    imageName="$localRegistry/$name"
+  else
+    imageName="$name"
+  fi
+  tests::run $imageName
 
-  builder::create "localhost:$regport/${name}"
-  docker push "localhost:$regport/${name}"
-  tests::run "localhost:$regport/${name}" "$registry_container_id"
+  kill $registryPid
 }
 
 function usage() {
@@ -84,7 +91,6 @@ OPTIONS
   --help        -h         prints the command usage
   --name <name> -n <name>  sets the name of the builder that is built for testing
   --token <token>          Token used to download assets from GitHub (e.g. jam, pack, etc) (optional)
-  --regport <port>         Local port to use for registry during tests
 USAGE
 }
 
@@ -92,8 +98,11 @@ function tools::install() {
   local token
   token="${1}"
 
+  util::tools::crane::install \
+    --directory "${BIN_DIR}"
+
   util::tools::pack::install \
-    --directory "${BUILDERDIR}/.bin" \
+    --directory "${BIN_DIR}" \
     --token "${token}"
 }
 
@@ -102,7 +111,6 @@ function builder::create() {
   name="${1}"
 
   util::print::title "Creating builder..."
-  pack config experimental true
   pack builder create "${name}" --config "${BUILDERDIR}/builder.toml"
 }
 
@@ -121,9 +129,7 @@ function image::pull::lifecycle() {
 
 function tests::run() {
   local name
-  name="${1}"
-  local registry_container_id
-  registry_container_id="${2}"
+  name="$1"
 
   util::print::title "Run Builder Smoke Tests"
 
@@ -132,37 +138,44 @@ function tests::run() {
   pushd "${BUILDERDIR}" > /dev/null
     if GOMAXPROCS="${GOMAXPROCS:-4}" go test -count=1 -timeout 0 ./smoke/... -v -run Smoke --name "${name}" | tee "${testout}"; then
       util::tools::tests::checkfocus "${testout}"
-      util::tools::cleanup_local_registry "${registry_container_id}"
       util::print::success "** GO Test Succeeded **"
     else
-      util::tools::cleanup_local_registry "${registry_container_id}"
       util::print::error "** GO Test Failed **"
     fi
   popd > /dev/null
 }
 
-function util::tools::setup_local_registry() {
-
-  registry_port="${1}"
-
-  local registry_container_id
-  if [[ "$(curl -s -o /dev/null -w "%{http_code}" localhost:$registry_port/v2/)" == "200" ]]; then
-    registry_container_id=""
+# Returns a random unused port
+function get::random::port() {
+  local port=$(shuf -i 50000-65000 -n 1)
+  ss -lat | grep $port > /dev/null
+  if [[ $? == 1 ]] ; then
+    echo $port
   else
-    registry_container_id=$(docker run -d -p "${registry_port}:5000" --restart=always registry:2)
+    echo get::random::port
   fi
-
-  echo $registry_container_id
 }
 
-function util::tools::cleanup_local_registry() {
-  local registry_container_id
-  registry_container_id="${1}"
+# Starts a local registry on the given port and returns the pid
+function local::registry::start() {
+  local registryPort registryPid localRegistry
 
-  if [[ -n "${registry_container_id}" ]]; then
-    docker stop $registry_container_id
-    docker rm $registry_container_id
-  fi
+  registryPort="$1"
+  localRegistry="127.0.0.1:$registryPort"
+
+  # Start a local in-memory registry so we can work with oci archives
+  PORT=$registryPort crane registry serve --insecure > /dev/null 2>&1 &
+  registryPid=$!
+
+  # Stop the registry if execution is interrupted
+  trap "kill $registryPid" 1 2 3 6
+
+  # Wait for the registry to be available
+  until crane catalog $localRegistry > /dev/null 2>&1; do
+    sleep 1
+  done
+
+  echo $registryPid
 }
 
 main "${@:-}"
