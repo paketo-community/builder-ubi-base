@@ -1,3 +1,4 @@
 {
-  "pack_config_enable_experimental": true
+  "pack_config_enable_experimental": true,
+  "push_builder_to_local_registry": true
 }
