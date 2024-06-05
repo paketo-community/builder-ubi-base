@@ -1,0 +1,90 @@
+---
+name: Update Tools
+
+on:
+  schedule:
+  - cron: '42 19 * * *'   # daily at 19:42 UTC
+  workflow_dispatch: {}
+
+concurrency: tools_update
+
+jobs:
+  update:
+    name: Update
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Checkout Branch
+      uses: paketo-buildpacks/github-config/actions/pull-request/checkout-branch@main
+      with:
+        branch: automation/tools/update
+
+    - name: Fetch Latest pack
+      id: latest-pack
+      uses: paketo-buildpacks/github-config/actions/tools/latest@main
+      with:
+        token: ${{ secrets.PAKETO_BOT_GITHUB_TOKEN }}
+        repo: buildpacks/pack
+
+    - name: Fetch Latest crane
+      id: latest-crane
+      uses: paketo-buildpacks/github-config/actions/tools/latest@main
+      with:
+        token: ${{ secrets.PAKETO_BOT_GITHUB_TOKEN }}
+        repo: google/go-containerregistry
+
+    - name: Update builder tools.json
+      env:
+        PACK_VERSION: ${{ steps.latest-pack.outputs.version }}
+        CRANE_VERSION: ${{ steps.latest-crane.outputs.version }}
+      run: |
+        jq --null-input \
+           --sort-keys \
+           --arg pack "${PACK_VERSION}" \
+           --arg crane "${CRANE_VERSION}" \
+           '{ pack: $pack, crane: $crane, }' > ./scripts/.util/tools.json
+
+    - name: Commit
+      id: commit
+      uses: paketo-buildpacks/github-config/actions/pull-request/create-commit@main
+      with:
+        message: "Updating tools"
+        pathspec: "."
+        keyid: ${{ secrets.PAKETO_BOT_GPG_SIGNING_KEY_ID }}
+        key: ${{ secrets.PAKETO_BOT_GPG_SIGNING_KEY_ID }}
+
+    - name: Push Branch
+      if: ${{ steps.commit.outputs.commit_sha != '' }}
+      uses: paketo-buildpacks/github-config/actions/pull-request/push-branch@main
+      with:
+        branch: automation/tools/update
+
+    - name: Open Pull Request
+      if: ${{ steps.commit.outputs.commit_sha != '' }}
+      uses: paketo-buildpacks/github-config/actions/pull-request/open@main
+      with:
+        token: ${{ secrets.PAKETO_BOT_GITHUB_TOKEN }}
+        title: "Updates tools"
+        branch: automation/tools/update
+
+
+  failure:
+    name: Alert on Failure
+    runs-on: ubuntu-22.04
+    needs: [update]
+    if: ${{ always() && needs.update.result == 'failure' }}
+    steps:
+    - name: File Failure Alert Issue
+      uses: paketo-buildpacks/github-config/actions/issue/file@main
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        repo: ${{ github.repository }}
+        label: "failure:update-tools"
+        comment_if_exists: true
+        issue_title: "Failure: Update Tools workflow"
+        issue_body: |
+          Update Tools workflow [failed](https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}).
+        comment_body: |
+           Another failure occurred: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
