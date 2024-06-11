@@ -81,7 +81,7 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         repo: ${{ github.repository }}
-        label: "failure:update-tools"
+        label: "failure:update-github-config"
         comment_if_exists: true
         issue_title: "Failure: Update Tools workflow"
         issue_body: |
