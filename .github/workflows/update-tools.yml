@@ -53,7 +53,7 @@ jobs:
         message: "Updating tools"
         pathspec: "."
         keyid: ${{ secrets.PAKETO_BOT_GPG_SIGNING_KEY_ID }}
-        key: ${{ secrets.PAKETO_BOT_GPG_SIGNING_KEY_ID }}
+        key: ${{ secrets.PAKETO_BOT_GPG_SIGNING_KEY }}
 
     - name: Push Branch
       if: ${{ steps.commit.outputs.commit_sha != '' }}
@@ -81,7 +81,7 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         repo: ${{ github.repository }}
-        label: "failure:update-tools"
+        label: "failure:update-github-config"
         comment_if_exists: true
         issue_title: "Failure: Update Tools workflow"
         issue_body: |
