@@ -9,16 +9,16 @@ description = "Ubi 8 base image with buildpacks for Node.js, Java, Quarkus and P
   version = "0.4.0"
 
 [[buildpacks]]
-  uri = "docker://gcr.io/paketo-buildpacks/java:15.1.0"
-  version = "15.1.0"
+  uri = "docker://gcr.io/paketo-buildpacks/java:15.2.0"
+  version = "15.2.0"
 
 [[buildpacks]]
   uri = "docker://gcr.io/paketo-buildpacks/nodejs:3.0.1"
   version = "3.0.1"
 
 [[buildpacks]]
-  uri = "docker://gcr.io/paketo-buildpacks/procfile:5.9.0"
-  version = "5.9.0"
+  uri = "docker://gcr.io/paketo-buildpacks/procfile:5.9.1"
+  version = "5.9.1"
 
 [[extensions]]
   id = "paketo-community/ubi-java-extension"
@@ -46,7 +46,7 @@ description = "Ubi 8 base image with buildpacks for Node.js, Java, Quarkus and P
 
   [[order.group]]
     id = "paketo-buildpacks/java"
-    version = "15.1.0"
+    version = "15.2.0"
 
 [[order]]
 
@@ -58,7 +58,7 @@ description = "Ubi 8 base image with buildpacks for Node.js, Java, Quarkus and P
 
   [[order.group]]
     id = "paketo-buildpacks/procfile"
-    version = "5.9.0"
+    version = "5.9.1"
 
 [[order-extensions]]
 
