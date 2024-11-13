@@ -27,8 +27,8 @@ description = "Ubi 8 base image with buildpacks for Node.js, Java, Quarkus and P
 
 [[extensions]]
   id = "paketo-community/ubi-nodejs-extension"
-  uri = "docker://docker.io/paketocommunity/ubi-nodejs-extension:1.0.4"
-  version = "1.0.4"
+  uri = "docker://docker.io/paketocommunity/ubi-nodejs-extension:1.0.5"
+  version = "1.0.5"
 
 [lifecycle]
   version = "0.20.4"
@@ -68,7 +68,7 @@ description = "Ubi 8 base image with buildpacks for Node.js, Java, Quarkus and P
 
   [[order-extensions.group]]
     id = "paketo-community/ubi-nodejs-extension"
-    version = "1.0.4"
+    version = "1.0.5"
 
 [stack]
   build-image = "docker.io/paketocommunity/build-ubi-base:0.0.85"
