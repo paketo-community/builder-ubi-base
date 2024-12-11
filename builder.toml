@@ -31,7 +31,7 @@ description = "Ubi 8 base image with buildpacks for Node.js, Java, Quarkus and P
   version = "1.0.7"
 
 [lifecycle]
-  version = "0.20.4"
+  version = "0.20.5"
 
 [[order]]
 
