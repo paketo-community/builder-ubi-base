@@ -71,7 +71,7 @@ description = "Ubi 8 base image with buildpacks for Node.js, Java, Quarkus and P
     version = "1.2.0"
 
 [stack]
-  build-image = "docker.io/paketobuildpacks/build-ubi8-base:0.0.103"
+  build-image = "docker.io/paketobuildpacks/build-ubi8-base:0.0.104"
   id = "io.buildpacks.stacks.ubi8"
   run-image = "index.docker.io/paketobuildpacks/run-ubi8-base:latest"
   run-image-mirrors = []
