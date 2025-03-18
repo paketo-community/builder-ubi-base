@@ -9,8 +9,8 @@ description = "Ubi 8 base image with buildpacks for Node.js, Java, Quarkus and P
   version = "0.5.0"
 
 [[buildpacks]]
-  uri = "docker://gcr.io/paketo-buildpacks/java:18.3.0"
-  version = "18.3.0"
+  uri = "docker://gcr.io/paketo-buildpacks/java:18.4.0"
+  version = "18.4.0"
 
 [[buildpacks]]
   uri = "docker://gcr.io/paketo-buildpacks/nodejs:7.4.0"
@@ -46,7 +46,7 @@ description = "Ubi 8 base image with buildpacks for Node.js, Java, Quarkus and P
 
   [[order.group]]
     id = "paketo-buildpacks/java"
-    version = "18.3.0"
+    version = "18.4.0"
 
 [[order]]
 
