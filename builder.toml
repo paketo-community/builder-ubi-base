@@ -1,4 +1,4 @@
-description = "Ubi 8 base image with buildpacks for Node.js, Java, Quarkus and Procfile"
+description = "Ubi 8 base builder with buildpacks for Node.js, Java, Quarkus and Procfile"
 
 [[buildpacks]]
   uri = "docker://docker.io/paketocommunity/ubi-java-buildpack:0.1.1"
