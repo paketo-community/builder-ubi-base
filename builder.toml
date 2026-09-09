@@ -30,8 +30,8 @@ description = "Ubi 8 base builder with buildpacks for Node.js, Java, Quarkus and
 
 [[extensions]]
   id = "paketo-buildpacks/ubi-nodejs-extension"
-  uri = "docker://docker.io/paketobuildpacks/ubi-nodejs-extension:1.6.38"
-  version = "1.6.38"
+  uri = "docker://docker.io/paketobuildpacks/ubi-nodejs-extension:1.6.39"
+  version = "1.6.39"
 
 [lifecycle]
   version = "0.21.18"
@@ -71,7 +71,7 @@ description = "Ubi 8 base builder with buildpacks for Node.js, Java, Quarkus and
 
   [[order-extensions.group]]
     id = "paketo-buildpacks/ubi-nodejs-extension"
-    version = "1.6.38"
+    version = "1.6.39"
 
 [run]
 
